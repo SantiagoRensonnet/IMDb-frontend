@@ -1,0 +1,12 @@
+
+The best solution is to use tmdb.org :
+
+    use your imdbid in this api url after find/:
+
+    https://api.themoviedb.org/3/find/tt0111161?api_key=__YOURAPIKEY__&external_source=imdb_id
+
+    Retrieve the json response and select the poster_path attribute:
+
+    e.g. "poster_path":"/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg"
+
+    Prepend this path with "http://image.tmdb.org/t/p/w150", and you will have the poster URL that you can use in an img tag 
