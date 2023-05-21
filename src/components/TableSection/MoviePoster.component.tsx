@@ -14,12 +14,9 @@ export const MoviePoster = ({
   const isMobile = useResize();
   const [posterPath, setPosterPath] = useState("");
   const findIMDbMovieEndpoint = `https://api.themoviedb.org/3/find/${id}?api_key=d76c5df85f84510c22bbc25e156327ce&external_source=imdb_id`;
-  const {
-    data: posterData,
-    error,
-    isLoading: isPosterLoading,
-  } = useSWR(findIMDbMovieEndpoint, (url: string) =>
-    axios.get(url).then((res) => res.data)
+  const { data: posterData, isLoading: isPosterLoading } = useSWR(
+    findIMDbMovieEndpoint,
+    (url: string) => axios.get(url).then((res) => res.data)
   );
 
   useEffect(() => {
