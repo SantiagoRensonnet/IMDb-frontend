@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 
-type debounceValueType = string | number;
-
 export function useDebounce<debounceValueType>(
   value: debounceValueType,
   delay = 500

@@ -16,7 +16,7 @@ import { MoviesContext } from "./movies.context";
 const getQueryURL = (params: queryParamObject) => {
   //base list url
   let url =
-    `/movies?page=${params.page}&limit=${params.limit}` +
+    `https://imdbapp.adaptable.app/movies?page=${params.page}&limit=${params.limit}` +
     `&sort_by=${params.sortOrder}(${params.sortBy})`;
   if (params.genre) url += `&genre=${params.genre}`;
   if (params.runtime) url += `&runtime[lte]=${params.runtime}`;
@@ -40,7 +40,7 @@ export const QueryProvider = ({
   });
   const [paginationProps, setPaginationProps] = useState<paginationProps>({});
   const queryURL = getQueryURL(queryParams);
-  const { data, error, isLoading } = useSWR(queryURL, (url: string) =>
+  const { data, isLoading } = useSWR(queryURL, (url: string) =>
     axios.get(url).then((res) => res.data)
   );
 

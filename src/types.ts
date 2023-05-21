@@ -82,3 +82,4 @@ export enum genreEnum {
   "War",
   "Western",
 }
+export type debounceValueType = string | number;
