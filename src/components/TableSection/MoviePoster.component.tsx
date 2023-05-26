@@ -14,7 +14,6 @@ export const MoviePoster = ({
   movieTitle: string;
   moviePoster: string;
 }) => {
-  const isMobile = useResize();
   const { newMoviesPosters } = useContext(MoviesContext) as MoviesContextType;
   const posterPath = moviePoster || newMoviesPosters.get(id);
 
@@ -25,10 +24,6 @@ export const MoviePoster = ({
       alt={`${movieTitle}-poster`}
     />
   ) : (
-    <Skeleton
-      width={isMobile ? 25 : 64}
-      height={96}
-      containerClassName="flex-1"
-    />
+    <Skeleton width={64} height={96} containerClassName="flex-1" />
   );
 };

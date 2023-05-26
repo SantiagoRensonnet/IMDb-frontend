@@ -1,5 +1,7 @@
+import { useResize } from "../../../hooks/useResize.hook";
 import { RowLoader } from "./RowLoader.component";
 export const TableLoader = ({ limit }: { limit: number }) => {
+  const isMobile = useResize();
   const rowMap = [];
   for (let i = 0; i < limit; i++) {
     rowMap.push(i + 1);
@@ -14,9 +16,11 @@ export const TableLoader = ({ limit }: { limit: number }) => {
                 <th scope="col" className="table-header">
                   <span className="sr-only">Poster</span>
                 </th>
-                <th scope="col" className="table-header">
-                  Title
-                </th>
+                {!isMobile && (
+                  <th scope="col" className="table-header">
+                    Title
+                  </th>
+                )}
 
                 <th scope="col" className="table-header">
                   Genre
