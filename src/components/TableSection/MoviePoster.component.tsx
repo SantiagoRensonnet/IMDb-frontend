@@ -4,6 +4,7 @@ import { useResize } from "../../hooks/useResize.hook";
 import { useContext } from "react";
 import { MoviesContext } from "../../contexts/movies.context";
 import { MoviesContextType } from "../../types";
+
 export const MoviePoster = ({
   id,
   movieTitle,
