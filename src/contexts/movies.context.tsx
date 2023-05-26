@@ -10,10 +10,20 @@ export const MoviesProvider = ({
   children: JSX.Element | JSX.Element[];
 }) => {
   const [movies, setMovies] = useState<Array<MovieData>>([]);
+  const [newMoviesPosters, setNewMoviesPosters] = useState<Map<string, string>>(
+    new Map()
+  );
   const [filterByTitleTerm, setFilterByTitleTerm] = useState("");
   return (
     <MoviesContext.Provider
-      value={{ movies, setMovies, filterByTitleTerm, setFilterByTitleTerm }}
+      value={{
+        movies,
+        setMovies,
+        filterByTitleTerm,
+        setFilterByTitleTerm,
+        newMoviesPosters,
+        setNewMoviesPosters,
+      }}
     >
       {children}
     </MoviesContext.Provider>

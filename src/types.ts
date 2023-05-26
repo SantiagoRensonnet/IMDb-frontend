@@ -12,6 +12,7 @@ export type MovieFetchData = {
   startYear: number;
   tconst: string;
   titleType: string;
+  posterPath?: string;
 };
 export type MovieData = {
   id: string;
@@ -20,6 +21,7 @@ export type MovieData = {
   title: string;
   runtime: number;
   year: number;
+  posterPath: string;
 };
 export type sortByType = "rating" | "title" | "year" | "runtime";
 export type sortOrderType = "asc" | "desc";
@@ -45,11 +47,15 @@ export type QueryContextType = {
   queryParams: queryParamObject;
   setQueryParams: React.Dispatch<React.SetStateAction<queryParamObject>>;
   paginationProps: paginationProps;
-  isLoading: boolean;
+  isDbLoading: boolean;
 };
 export type MoviesContextType = {
   movies: Array<MovieData>;
   setMovies: React.Dispatch<React.SetStateAction<Array<MovieData>>>;
+  newMoviesPosters: Map<string, string>;
+  setNewMoviesPosters: React.Dispatch<
+    React.SetStateAction<Map<string, string>>
+  >;
   filterByTitleTerm: string;
   setFilterByTitleTerm: React.Dispatch<React.SetStateAction<string>>;
 };
