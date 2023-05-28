@@ -14,7 +14,13 @@ export const MoviePoster = ({
   moviePoster: string;
 }) => {
   const { newMoviesPosters } = useContext(MoviesContext) as MoviesContextType;
-  const posterPath = moviePoster || newMoviesPosters.get(id);
+
+  const posterPath =
+    moviePoster ||
+    (newMoviesPosters &&
+      newMoviesPosters[id] &&
+      newMoviesPosters[id].posterURL) ||
+    "";
 
   return posterPath ? (
     <img

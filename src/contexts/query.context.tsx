@@ -8,6 +8,7 @@ import {
   MoviesContextType,
   queryParamObject,
   paginationProps,
+  PosterMap,
 } from "../types";
 //contexts
 import { MoviesContext } from "./movies.context";
@@ -15,7 +16,6 @@ import { MoviesContext } from "./movies.context";
 import {
   getQueryURL,
   createMoviePosterPromiseArray,
-  getMoviePosters,
   updateDb,
 } from "./utils/fetchingUtils";
 //store(context)
@@ -26,9 +26,8 @@ export const QueryProvider = ({
 }: {
   children: JSX.Element | JSX.Element[];
 }) => {
-  const { setMovies, setNewMoviesPosters } = useContext(
-    MoviesContext
-  ) as MoviesContextType;
+  const { movies, setMovies, newMoviesPosters, setNewMoviesPosters } =
+    useContext(MoviesContext) as MoviesContextType;
   const [queryParams, setQueryParams] = useState<queryParamObject>({
     sortBy: "rating",
     sortOrder: "desc",
@@ -55,6 +54,7 @@ export const QueryProvider = ({
       const formattedData =
         rawDataArray.length > 0
           ? rawDataArray.map((rawData, index) => ({
+              mongoId: rawData._id,
               id: rawData.tconst,
               rating: rawData.averageRating,
               genres: rawData.genres,
@@ -66,20 +66,48 @@ export const QueryProvider = ({
               posterPath: rawData.posterPath || "",
             }))
           : [];
-      const moviePosterPromiseArray =
-        createMoviePosterPromiseArray(formattedData);
 
       setMovies(formattedData);
       setPaginationProps(paginationResults);
-      if (moviePosterPromiseArray) {
-        getMoviePosters(moviePosterPromiseArray).then((dataMap) => {
-          setNewMoviesPosters(dataMap);
-          updateDb(dataMap);
-        });
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dbData, isDbLoading]);
+  useEffect(() => {
+    if (movies.length > 0) {
+      const moviePosterPromiseArray = createMoviePosterPromiseArray(movies);
+
+      setNewMoviesPosters({}); //reset posters
+
+      moviePosterPromiseArray.then((resultArray) => {
+        resultArray.forEach((result) => {
+          if (result.status === "fulfilled") {
+            result.value.posterURL.then((res) => {
+              const posterValue =
+                "https://image.tmdb.org/t/p/original" +
+                res.data.movie_results[0].poster_path;
+
+              const key = result.value.id;
+              const newObject = {
+                mongoId: result.value.mongoId,
+                posterURL: posterValue,
+              };
+              const newMap: PosterMap = {};
+              newMap[key] = newObject;
+
+              setNewMoviesPosters((prevState) => {
+                return { ...prevState, ...newMap };
+              });
+            });
+          }
+        });
+      });
+    }
+  }, [movies, setNewMoviesPosters]);
+  useEffect(() => {
+    if (Object.keys(newMoviesPosters).length === queryParams.limit) {
+      updateDb(newMoviesPosters);
+    }
+  }, [newMoviesPosters, queryParams]);
   return (
     <QueryContext.Provider
       value={{ queryParams, setQueryParams, paginationProps, isDbLoading }}

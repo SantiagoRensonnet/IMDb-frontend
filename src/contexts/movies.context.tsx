@@ -1,5 +1,5 @@
 import { useState, createContext } from "react";
-import { MovieData } from "../types";
+import { MovieData, PosterMap } from "../types";
 
 //store(context)
 export const MoviesContext = createContext({});
@@ -10,9 +10,7 @@ export const MoviesProvider = ({
   children: JSX.Element | JSX.Element[];
 }) => {
   const [movies, setMovies] = useState<Array<MovieData>>([]);
-  const [newMoviesPosters, setNewMoviesPosters] = useState<Map<string, string>>(
-    new Map()
-  );
+  const [newMoviesPosters, setNewMoviesPosters] = useState<PosterMap>({});
   const [filterByTitleTerm, setFilterByTitleTerm] = useState("");
   return (
     <MoviesContext.Provider
