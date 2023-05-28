@@ -35,6 +35,7 @@ export const QueryProvider = ({
     limit: 10,
   });
   const [paginationProps, setPaginationProps] = useState<paginationProps>({});
+  const [isFetchingFinished, setIsFetchingFinished] = useState(false);
   const queryURL = getQueryURL(queryParams);
   const { data: dbData, isLoading: isDbLoading } = useSWR(
     queryURL,
@@ -79,7 +80,7 @@ export const QueryProvider = ({
       setNewMoviesPosters({}); //reset posters
 
       moviePosterPromiseArray.then((resultArray) => {
-        resultArray.forEach((result) => {
+        resultArray.forEach((result, index) => {
           if (result.status === "fulfilled") {
             result.value.posterURL.then((res) => {
               const posterValue =
@@ -97,6 +98,9 @@ export const QueryProvider = ({
               setNewMoviesPosters((prevState) => {
                 return { ...prevState, ...newMap };
               });
+              if (index === resultArray.length - 1) {
+                setIsFetchingFinished(true);
+              }
             });
           }
         });
@@ -104,10 +108,11 @@ export const QueryProvider = ({
     }
   }, [movies, setNewMoviesPosters]);
   useEffect(() => {
-    if (Object.keys(newMoviesPosters).length === queryParams.limit) {
+    if (isFetchingFinished) {
       updateDb(newMoviesPosters);
+      setIsFetchingFinished(false);
     }
-  }, [newMoviesPosters, queryParams]);
+  }, [newMoviesPosters, queryParams, isFetchingFinished]);
   return (
     <QueryContext.Provider
       value={{ queryParams, setQueryParams, paginationProps, isDbLoading }}
