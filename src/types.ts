@@ -13,7 +13,7 @@ export type MovieFetchData = {
   startYear: number;
   tconst: string;
   titleType: string;
-  posterPath?: string;
+  posterURL?: string;
 };
 export type MovieData = {
   mongoId: string;
@@ -23,7 +23,7 @@ export type MovieData = {
   title: string;
   runtime: number;
   year: number;
-  posterPath: string;
+  posterURL: string;
 };
 export type sortByType = "rating" | "title" | "year" | "runtime";
 export type sortOrderType = "asc" | "desc";

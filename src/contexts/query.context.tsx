@@ -64,7 +64,7 @@ export const QueryProvider = ({
               }`,
               runtime: rawData.runtimeMinutes,
               year: rawData.startYear,
-              posterPath: rawData.posterPath || "",
+              posterURL: rawData.posterURL || "",
             }))
           : [];
 

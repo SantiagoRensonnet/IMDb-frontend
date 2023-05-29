@@ -7,10 +7,13 @@ import {
 } from "../../types";
 import axios from "axios";
 
+const BASE_API_URL = "https://imdbapp.adaptable.app/movies";
+const BASE_DEV_URL = "/movies";
+
 export const getQueryURL = (params: queryParamObject) => {
   //base list url
   let url =
-    `https://imdbapp.adaptable.app/movies?page=${params.page}&limit=${params.limit}` +
+    `${BASE_DEV_URL}?page=${params.page}&limit=${params.limit}` +
     `&sort_by=${params.sortOrder}(${params.sortBy})`;
   if (params.genre) url += `&genre=${params.genre}`;
   if (params.runtime) url += `&runtime[lte]=${params.runtime}`;
@@ -20,7 +23,7 @@ export const getQueryURL = (params: queryParamObject) => {
 export const createMoviePosterPromiseArray = (dataArray: MovieData[]) => {
   const promises: PendingPoster[] = [];
   for (const data of dataArray) {
-    if (!data.posterPath) {
+    if (!data.posterURL) {
       promises.push({
         id: data.id,
         mongoId: data.mongoId,
@@ -65,7 +68,9 @@ export const getMoviePosters = (
 export const updateDb = (reqBody: PosterMap) => {
   console.log(reqBody);
 
+  const postUrl = `${BASE_DEV_URL}/updatePosters`;
+
   axios
-    .put("https://jsonplaceholder.typicode.com/posts/1", reqBody)
-    .then((res) => console.log(res));
+    .put(postUrl, reqBody)
+    .then((res) => console.log("server response (from client):", res));
 };

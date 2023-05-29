@@ -16,7 +16,7 @@ export const TableRow = ({
   year,
   rating,
   runtime,
-  posterPath,
+  posterURL,
 }: MovieData) => {
   const imDbUrl = `https://www.imdb.com/title/${id}`;
   const isMobile = useResize();
@@ -29,7 +29,7 @@ export const TableRow = ({
             href={imDbUrl}
             target="_blank"
           >
-            <MoviePoster moviePoster={posterPath} movieTitle={title} id={id} />
+            <MoviePoster moviePoster={posterURL} movieTitle={title} id={id} />
           </a>
         </td>
 
