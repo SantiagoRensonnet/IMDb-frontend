@@ -8,21 +8,16 @@ import {
   MoviesContextType,
   queryParamObject,
   paginationProps,
+  PosterMap,
 } from "../types";
 //contexts
 import { MoviesContext } from "./movies.context";
-
-//Aux functions
-const getQueryURL = (params: queryParamObject) => {
-  //base list url
-  let url =
-    `https://imdbapp.adaptable.app/movies?page=${params.page}&limit=${params.limit}` +
-    `&sort_by=${params.sortOrder}(${params.sortBy})`;
-  if (params.genre) url += `&genre=${params.genre}`;
-  if (params.runtime) url += `&runtime[lte]=${params.runtime}`;
-  if (params.rating) url += `&rating[gt]=${params.rating}`;
-  return url;
-};
+//utils
+import {
+  getQueryURL,
+  createMoviePosterPromiseArray,
+  updateDb,
+} from "./utils/fetchingUtils";
 //store(context)
 export const QueryContext = createContext({});
 
@@ -31,7 +26,8 @@ export const QueryProvider = ({
 }: {
   children: JSX.Element | JSX.Element[];
 }) => {
-  const { setMovies } = useContext(MoviesContext) as MoviesContextType;
+  const { movies, setMovies, newMoviesPosters, setNewMoviesPosters } =
+    useContext(MoviesContext) as MoviesContextType;
   const [queryParams, setQueryParams] = useState<queryParamObject>({
     sortBy: "rating",
     sortOrder: "desc",
@@ -39,31 +35,36 @@ export const QueryProvider = ({
     limit: 10,
   });
   const [paginationProps, setPaginationProps] = useState<paginationProps>({});
+  const [isFetchingFinished, setIsFetchingFinished] = useState(false);
   const queryURL = getQueryURL(queryParams);
-  const { data, isLoading } = useSWR(queryURL, (url: string) =>
-    axios.get(url).then((res) => res.data)
+  const { data: dbData, isLoading: isDbLoading } = useSWR(
+    queryURL,
+    (url: string) => axios.get(url).then((res) => res.data)
   );
 
   useEffect(() => {
-    if (!isLoading && data) {
+    if (!isDbLoading && dbData) {
       const paginationResults: paginationProps = {
-        limit: data.limit,
-        prevPage: data.previousPage,
-        currentPage: data.currentPage,
-        nextPage: data.nextPage,
+        limit: dbData.limit,
+        prevPage: dbData.previousPage,
+        currentPage: dbData.currentPage,
+        nextPage: dbData.nextPage,
       };
-      const rawDataArray: MovieFetchData[] = data.result;
+      const rawDataArray: MovieFetchData[] = dbData.result;
+
       const formattedData =
         rawDataArray.length > 0
           ? rawDataArray.map((rawData, index) => ({
+              mongoId: rawData._id,
               id: rawData.tconst,
               rating: rawData.averageRating,
               genres: rawData.genres,
-              title: `${index + 1 + (data.currentPage - 1) * data.limit}. ${
+              title: `${index + 1 + (dbData.currentPage - 1) * dbData.limit}. ${
                 rawData.primaryTitle
               }`,
               runtime: rawData.runtimeMinutes,
               year: rawData.startYear,
+              posterURL: rawData.posterURL || "",
             }))
           : [];
 
@@ -71,10 +72,50 @@ export const QueryProvider = ({
       setPaginationProps(paginationResults);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, isLoading]);
+  }, [dbData, isDbLoading]);
+  useEffect(() => {
+    if (movies.length > 0) {
+      const moviePosterPromiseArray = createMoviePosterPromiseArray(movies);
+
+      setNewMoviesPosters({}); //reset posters
+
+      moviePosterPromiseArray.then((resultArray) => {
+        resultArray.forEach((result, index) => {
+          if (result.status === "fulfilled") {
+            result.value.posterURL.then((res) => {
+              const posterValue =
+                "https://image.tmdb.org/t/p/original" +
+                res.data.movie_results[0].poster_path;
+
+              const key = result.value.id;
+              const newObject = {
+                mongoId: result.value.mongoId,
+                posterURL: posterValue,
+              };
+              const newMap: PosterMap = {};
+              newMap[key] = newObject;
+
+              setNewMoviesPosters((prevState) => {
+                return { ...prevState, ...newMap };
+              });
+              if (index === resultArray.length - 1) {
+                setIsFetchingFinished(true);
+              }
+            });
+          }
+        });
+      });
+    }
+  }, [movies, setNewMoviesPosters]);
+  useEffect(() => {
+    if (isFetchingFinished) {
+      updateDb(newMoviesPosters);
+      setIsFetchingFinished(false);
+    }
+  }, [newMoviesPosters, queryParams, isFetchingFinished]);
   return (
     <QueryContext.Provider
-      value={{ queryParams, setQueryParams, paginationProps, isLoading }}
+      value={{ queryParams, setQueryParams, paginationProps, isDbLoading }}
     >
       {children}
     </QueryContext.Provider>

@@ -11,12 +11,12 @@ import { TableLoader } from "./Loader/TableLoader.component";
 
 export const TableSection = () => {
   const limit = 10;
-  const { isLoading } = useContext(QueryContext) as QueryContextType;
+  const { isDbLoading } = useContext(QueryContext) as QueryContextType;
 
   return (
     <section className="container flex flex-col px-7 sm:px-4 mb-4">
       <AnimatePresence>
-        {!isLoading ? (
+        {!isDbLoading ? (
           <motion.div
             key="table"
             initial={{ opacity: 0 }}

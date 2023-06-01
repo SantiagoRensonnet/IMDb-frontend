@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 export type MovieFetchData = {
   __v: number;
   _id: string;
@@ -12,14 +13,17 @@ export type MovieFetchData = {
   startYear: number;
   tconst: string;
   titleType: string;
+  posterURL?: string;
 };
 export type MovieData = {
+  mongoId: string;
   id: string;
   rating: number;
   genres: string[];
   title: string;
   runtime: number;
   year: number;
+  posterURL: string;
 };
 export type sortByType = "rating" | "title" | "year" | "runtime";
 export type sortOrderType = "asc" | "desc";
@@ -41,15 +45,56 @@ export type paginationProps = {
   currentPage?: number;
   nextPage?: number | null;
 };
+
+export interface PosterObject {
+  mongoId: string;
+  posterURL: string;
+}
+export interface PosterMap {
+  [key: string]: PosterObject;
+}
+
+interface MovieResult {
+  adult: boolean;
+  backdrop_path: string;
+  id: number;
+  title: string;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  poster_path: string;
+  media_type: string;
+  genre_ids: number[];
+  popularity: number;
+  release_date: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+}
+
+interface SearchResult {
+  movie_results: MovieResult[];
+  person_results: unknown[];
+  tv_results: unknown[];
+  tv_episode_results: unknown[];
+  tv_season_results: unknown[];
+}
+export type PendingPoster = {
+  id: string;
+  mongoId: string;
+  posterURL: Promise<AxiosResponse<SearchResult, unknown>>;
+};
 export type QueryContextType = {
   queryParams: queryParamObject;
   setQueryParams: React.Dispatch<React.SetStateAction<queryParamObject>>;
   paginationProps: paginationProps;
-  isLoading: boolean;
+  isDbLoading: boolean;
 };
 export type MoviesContextType = {
   movies: Array<MovieData>;
   setMovies: React.Dispatch<React.SetStateAction<Array<MovieData>>>;
+  newMoviesPosters: PosterMap;
+  setNewMoviesPosters: React.Dispatch<React.SetStateAction<PosterMap>>;
   filterByTitleTerm: string;
   setFilterByTitleTerm: React.Dispatch<React.SetStateAction<string>>;
 };

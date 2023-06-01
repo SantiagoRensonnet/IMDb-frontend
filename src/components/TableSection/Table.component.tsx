@@ -5,11 +5,13 @@ import { useContext } from "react";
 import { MoviesContextType } from "../../types";
 //contexts
 import { MoviesContext } from "../../contexts/movies.context";
-
+//hooks
+import { useResize } from "../../hooks/useResize.hook";
 //components
 import { TableRow } from "./TableRow.component";
 
 export const Table = () => {
+  const isMobile = useResize();
   const { movies, filterByTitleTerm } = useContext(
     MoviesContext
   ) as MoviesContextType;
@@ -27,13 +29,19 @@ export const Table = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th scope="col" className="table-header">
-                  <span className="sr-only">Poster</span>
-                </th>
+                {isMobile ? (
+                  <th scope="col" className="table-header"></th>
+                ) : (
+                  <>
+                    <th scope="col" className="table-header">
+                      <span className="sr-only">Poster</span>
+                    </th>
 
-                <th scope="col" className="table-header">
-                  Title
-                </th>
+                    <th scope="col" className="table-header">
+                      Title
+                    </th>
+                  </>
+                )}
 
                 <th scope="col" className="table-header">
                   Genre

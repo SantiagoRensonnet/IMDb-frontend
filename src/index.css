@@ -15,7 +15,7 @@
 
   /*Table*/
   .table-header {
-    @apply py-3.5  text-sm font-normal text-left rtl:text-right text-gray-500;
+    @apply py-3.5  text-sm font-normal text-center sm:text-left rtl:text-right text-gray-500;
   }
   .table-data {
     @apply text-sm font-medium;
