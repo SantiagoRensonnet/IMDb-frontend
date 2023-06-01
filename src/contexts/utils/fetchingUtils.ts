@@ -8,7 +8,7 @@ import {
 import axios from "axios";
 
 const BASE_API_URL = "https://imdbapp.adaptable.app/movies";
-const BASE_DEV_URL = "/movies";
+// const BASE_DEV_URL = "/movies";
 
 export const getQueryURL = (params: queryParamObject) => {
   //base list url
