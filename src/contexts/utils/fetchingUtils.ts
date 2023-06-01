@@ -69,4 +69,7 @@ export const updateDb = (reqBody: PosterMap) => {
   const postUrl = "https://imdbapp.adaptable.app/updatePosters";
 
   // axios.post(postUrl, reqBody).then((res) => res);
+  // From Adaptable io docs
+  /*Your app cannot perform background activities outside the scope of request handling. 
+  Your app's CPU allocation is set to zero when your app is not processing a network request.*/
 };
