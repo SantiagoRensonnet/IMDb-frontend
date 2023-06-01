@@ -3,7 +3,6 @@ import {
   MovieData,
   PendingPoster,
   PosterObject,
-  PosterMap,
 } from "../../types";
 import axios from "axios";
 
@@ -65,11 +64,11 @@ export const getMoviePosters = (
   return posterMap;
 };
 
-export const updateDb = (reqBody: PosterMap) => {
-  const postUrl = "https://imdbapp.adaptable.app/updatePosters";
+// export const updateDb = (reqBody: PosterMap) => {
+//   const putUrl = "https://imdbapp.adaptable.app/updatePosters";
 
-  // axios.post(postUrl, reqBody).then((res) => res);
-  // From Adaptable io docs
-  /*Your app cannot perform background activities outside the scope of request handling. 
-  Your app's CPU allocation is set to zero when your app is not processing a network request.*/
-};
+//   axios.put(putUrl, reqBody).then((res) => res);
+//   // From Adaptable io docs
+//   /*Your app cannot perform background activities outside the scope of request handling.
+//   Your app's CPU allocation is set to zero when your app is not processing a network request.*/
+// };
