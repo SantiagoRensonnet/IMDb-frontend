@@ -13,7 +13,7 @@ const BASE_DEV_URL = "/movies";
 export const getQueryURL = (params: queryParamObject) => {
   //base list url
   let url =
-    `${BASE_DEV_URL}?page=${params.page}&limit=${params.limit}` +
+    `${BASE_API_URL}?page=${params.page}&limit=${params.limit}` +
     `&sort_by=${params.sortOrder}(${params.sortBy})`;
   if (params.genre) url += `&genre=${params.genre}`;
   if (params.runtime) url += `&runtime[lte]=${params.runtime}`;
@@ -66,11 +66,7 @@ export const getMoviePosters = (
 };
 
 export const updateDb = (reqBody: PosterMap) => {
-  console.log(reqBody);
+  const postUrl = `${BASE_API_URL}/updatePosters`;
 
-  const postUrl = `${BASE_DEV_URL}/updatePosters`;
-
-  axios
-    .put(postUrl, reqBody)
-    .then((res) => console.log("server response (from client):", res));
+  axios.put(postUrl, reqBody).then((res) => res);
 };
