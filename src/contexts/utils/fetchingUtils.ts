@@ -68,5 +68,5 @@ export const getMoviePosters = (
 export const updateDb = (reqBody: PosterMap) => {
   const postUrl = `${BASE_API_URL}/updatePosters`;
 
-  axios.put(postUrl, reqBody).then((res) => res);
+  axios.post(postUrl, reqBody).then((res) => res);
 };
