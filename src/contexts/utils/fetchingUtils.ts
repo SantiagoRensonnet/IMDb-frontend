@@ -66,7 +66,7 @@ export const getMoviePosters = (
 };
 
 export const updateDb = (reqBody: PosterMap) => {
-  const postUrl = `"https://imdbapp.adaptable.app/updatePosters`;
+  const postUrl = "https://imdbapp.adaptable.app/updatePosters";
 
   axios.post(postUrl, reqBody).then((res) => res);
 };
