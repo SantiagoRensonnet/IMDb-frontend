@@ -16,6 +16,7 @@ import { MoviesContext } from "./movies.context";
 import {
   getQueryURL,
   createMoviePosterPromiseArray,
+  updateDb,
 } from "./utils/fetchingUtils";
 //store(context)
 export const QueryContext = createContext({});
@@ -108,7 +109,7 @@ export const QueryProvider = ({
   }, [movies, setNewMoviesPosters]);
   useEffect(() => {
     if (isFetchingFinished) {
-      // updateDb(newMoviesPosters);
+      updateDb(newMoviesPosters);
       setIsFetchingFinished(false);
     }
   }, [newMoviesPosters, queryParams, isFetchingFinished]);
